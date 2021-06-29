@@ -16,7 +16,9 @@ jobs:
       - name: Prepare
         id: prep
         run: |
+
           DOCKER_IMAGE=avhost/${GITHUB_REPOSITORY#*/}
+          VERSION=${GITHUB_REF/refs\/tags\//}
           SHORTREF=${GITHUB_SHA::8}
 
           # If this is git tag, use the tag name as a docker tag
