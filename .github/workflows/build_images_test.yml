@@ -17,12 +17,13 @@ jobs:
         id: prep
         run: |
           DOCKER_IMAGE=avhost/${GITHUB_REPOSITORY#*/}
+          SHORTREF=${GITHUB_SHA::8}
 
           # If this is git tag, use the tag name as a docker tag
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=test-${GITHUB_REF#refs/tags/v}
+            VERSION=${GITHUB_REF#refs/tags/v}
           fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          TAGS="${DOCKER_IMAGE}:test-${VERSION}"
 
           # If the VERSION looks like a version number, assume that
           # this is the most recent version of the image and also
