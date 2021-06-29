@@ -19,9 +19,7 @@ jobs:
 
           DOCKER_IMAGE=avhost/${GITHUB_REPOSITORY#*/}
           SHORTREF=${GITHUB_SHA::8}
-
           VERSION=${GITHUB_REF#refs/*/}
-          fi
           TAGS="${DOCKER_IMAGE}:test-${VERSION}"
 
           # If the VERSION looks like a version number, assume that
