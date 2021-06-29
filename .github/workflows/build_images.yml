@@ -37,8 +37,6 @@ jobs:
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
 
-          mkdir /data
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:

@@ -12,7 +12,6 @@ COPY adds/start.sh /start.sh
 ENTRYPOINT ["/start.sh"]
 CMD ["autostart"]
 EXPOSE 8448
-VOLUME ["/data"]
 
 # Git branch to build from
 ARG BV_SYN=release-v1.37
@@ -87,6 +86,7 @@ RUN set -ex \
     pip3 install --upgrade lxml \
     ; \
     groupadd -r -g $MATRIX_GID matrix \
+    && mkdir /data \
     && useradd -r -d /data -M -u $MATRIX_UID -g matrix matrix \
     && chown -R $MATRIX_UID:$MATRIX_GID /data \
     && chown -R $MATRIX_UID:$MATRIX_GID /uploads \
