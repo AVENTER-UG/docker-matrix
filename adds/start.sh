@@ -63,16 +63,19 @@ configure_log_config() {
 
 case $OPTION in
     	"start")
-		if [ -f /data/turnserver.conf ]; then
-			echo "-=> start turn"
-			if [ -f /conf/supervisord-turnserver.conf.deactivated ]; then
-				mv -f /conf/supervisord-turnserver.conf.deactivated /conf/supervisord-turnserver.conf
-			fi
-		else
-			if [ -f /conf/supervisord-turnserver.conf ]; then
-				mv -f /conf/supervisord-turnserver.conf /conf/supervisord-turnserver.conf.deactivated
-			fi
-		fi
+
+		if [ "${COTURN_ENABLE}" == "true" ]; then
+  		if [ -f /data/turnserver.conf ]; then
+  			echo "-=> start turn"
+  			if [ -f /conf/supervisord-turnserver.conf.deactivated ]; then
+  				mv -f /conf/supervisord-turnserver.conf.deactivated /conf/supervisord-turnserver.conf
+  			fi
+  		else
+  			if [ -f /conf/supervisord-turnserver.conf ]; then
+  				mv -f /conf/supervisord-turnserver.conf /conf/supervisord-turnserver.conf.deactivated
+  			fi
+  		fi
+    fi
 
 		(
 			if [ -f /data/vector.im.conf ] || [ -f /data/riot.im.conf ] ; then
@@ -88,16 +91,26 @@ case $OPTION in
             && chown -R $MATRIX_UID:$MATRIX_GID /data \
             && chown -R $MATRIX_UID:$MATRIX_GID /uploads \
             && chmod a+rwx /run 
+		      if [ "${COTURN_ENABLE}" == "true" ]; then
              su matrix -c "python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml" & su matrix -c "/usr/bin/turnserver -c /data/turnserver.conf"
+          else
+             su matrix -c "python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml" 
+          fi
         else
-        	exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml & /usr/bin/turnserver -c /data/turnserver.conf
+		      if [ "${COTURN_ENABLE}" == "true" ]; then
+        	  exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml & /usr/bin/turnserver -c /data/turnserver.conf
+          else 
+        	  exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml
+          fi
         fi
 		;;
 
 	"autostart")
 		if [ -f /data/homeserver.yaml ]; then
-            if [ -f /data/turnserver.conf ]; then
-                echo "-=> start turn"
+		        if [ "${COTURN_ENABLE}" == "true" ]; then
+                if [ -f /data/turnserver.conf ]; then
+                    echo "-=> start turn"
+                fi
             fi
             (
                 if [ -f /data/vector.im.conf ] || [ -f /data/riot.im.conf ] ; then
@@ -112,9 +125,17 @@ case $OPTION in
             && chown -R $MATRIX_UID:$MATRIX_GID /data \
             && chown -R $MATRIX_UID:$MATRIX_GID /uploads \
             && chmod a+rwx /run 
-             su matrix -c "python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml" & su matrix -c "/usr/bin/turnserver -c /data/turnserver.conf"
+		      if [ "${COTURN_ENABLE}" == "true" ]; then
+            su matrix -c "python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml" & su matrix -c "/usr/bin/turnserver -c /data/turnserver.conf"
+          else
+            su matrix -c "python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml" 
+          fi
         else
-        	exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml & /usr/bin/turnserver -c /data/turnserver.conf
+		      if [ "${COTURN_ENABLE}" == "true" ]; then
+        	  exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml & /usr/bin/turnserver -c /data/turnserver.conf
+          else
+        	  exec python3 -m synapse.app.homeserver --config-path /data/homeserver.yaml
+          fi
         fi
         else
             breakup="0"
@@ -199,4 +220,5 @@ case $OPTION in
 		echo "-=> unknown \'$OPTION\'"
 		;;
 esac
+
 
