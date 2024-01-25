@@ -1,10 +1,10 @@
 # target architecture
-FROM debian:bookworm-slim as builder
+FROM debian:trixie-slim as builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.99
+ARG BV_SYN=release-v1.100
 ARG BV_TUR=master
-ARG TAG_SYN=v1.99.0
+ARG TAG_SYN=v1.100.0rc3
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
