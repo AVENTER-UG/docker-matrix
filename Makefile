@@ -3,29 +3,20 @@
 #vars
 IMAGENAME=docker-matrix
 IMAGEFULLNAME=avhost/${IMAGENAME}
-BRANCH=${shell git symbolic-ref --short HEAD}
+TAG=$(shell git describe --tags --abbrev=0)
+BRANCH=$(shell git symbolic-ref --short HEAD | xargs basename)
+BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
 LASTCOMMIT=$(shell git log -1 --pretty=short | tail -n 1 | tr -d " " | tr -d "UPDATE:")
-TAG_SYN=v1.107.0
-BV_SYN=release-v1.107
+TAG_SYN=v1.108.0
+BV_SYN=release-v1.108
+BUILDDATE=$(shell date -u +%Y%m%d)
 
-help:
-	    @echo "Makefile arguments:"
-	    @echo ""
-	    @echo "Makefile commands:"
-	    @echo "build"
-			@echo "publish-latest"
-			@echo "publish-tag"
 
 .DEFAULT_GOAL := all
 
 ifeq (${BRANCH}, master) 
-	BRANCH=latest
-endif
-
-ifneq ($(shell echo $(LASTCOMMIT) | grep -E '^v([0-9]+\.){0,2}(\*|[0-9]+)'),)
-	BRANCH=${LASTCOMMIT}
-else
-	BRANCH=latest
+        BRANCH=latest
+        BRANCHSHORT=latest
 endif
 
 
@@ -36,8 +27,9 @@ build:
 push:
 	@echo ">>>> Publish docker image: " ${BRANCH}
 	@docker buildx create --use --name buildkit
-	@docker buildx build --platform linux/amd64,linux/arm64 --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} --push -t ${IMAGEFULLNAME}:${BRANCH} .
-	@docker buildx build --platform linux/amd64,linux/arm64 --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} --push -t ${IMAGEFULLNAME}:latest .
+	@docker buildx build --sbom=true --provenance=true --platform linux/amd64,linux/arm64 --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} --push -t ${IMAGEFULLNAME}:${BRANCH} .
+	@docker buildx build --sbom=true --provenance=true --platform linux/amd64,linux/arm64 --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} --push -t ${IMAGEFULLNAME}:${BRANCHSHORT} .
+	@docker buildx build --sbom=true --provenance=true --platform linux/amd64,linux/arm64 --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} --push -t ${IMAGEFULLNAME}:latest .
 	@docker buildx rm buildkit
 
 
