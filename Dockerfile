@@ -2,9 +2,9 @@
 FROM debian:trixie-slim as builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.108
+ARG BV_SYN=release-v1.109
 ARG BV_TUR=master
-ARG TAG_SYN=v1.108.0
+ARG TAG_SYN=v1.109.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
