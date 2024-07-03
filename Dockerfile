@@ -1,5 +1,5 @@
 # target architecture
-FROM debian:trixie-slim as builder
+FROM debian:trixie-slim AS builder
 
 # Git branch to build from
 ARG BV_SYN=release-v1.109
