@@ -2,9 +2,9 @@
 FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.109
+ARG BV_SYN=release-v1.111
 ARG BV_TUR=master
-ARG TAG_SYN=v1.109.0
+ARG TAG_SYN=v1.111.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -23,13 +23,14 @@ RUN set -ex \
     && apt-get update -y -q --fix-missing\
     && apt-get upgrade -y 
 
-RUN apt-get install -y --no-install-recommends rustc cargo file gcc git libevent-dev libffi-dev libgnutls28-dev libjpeg62-turbo-dev libldap2-dev libsasl2-dev libsqlite3-dev \
-        libssl-dev libtool libxml2-dev libxslt1-dev make zlib1g-dev python3-dev python3-setuptools libpq-dev pkg-config libicu-dev g++
+RUN apt-get install -y --no-install-recommends curl git file gcc git libevent-dev libffi-dev libgnutls28-dev libjpeg62-turbo-dev libldap2-dev libsasl2-dev libsqlite3-dev \
+   libssl-dev libtool libxml2-dev libxslt1-dev make zlib1g-dev python3-dev python3-setuptools libpq-dev pkg-config libicu-dev g++
 
 RUN apt-get install -y --no-install-recommends \
         bash \
         coreutils \
         coturn \
+  	libjpeg-dev \
         libjpeg62-turbo \
         libssl3 \
         libtool \
@@ -41,7 +42,21 @@ RUN apt-get install -y --no-install-recommends \
         python3 \
         python3-pip \
         python3-jinja2 \
-        python3-venv 
+        python3-venv \
+  	libwebp-dev \
+  	libxml++2.6-dev \
+  	openssl \
+  	zlib1g-dev \
+  	pkg-config \
+  	&& rm -rf /var/lib/apt/lists/*	
+
+ENV RUSTUP_HOME=/rust
+ENV CARGO_HOME=/cargo
+ENV PATH=/cargo/bin:/rust/bin:$PATH
+RUN mkdir /rust /cargo
+
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain stable --profile minimal
+
 
 RUN groupadd -r -g $MATRIX_GID matrix 
 RUN useradd -r -d /matrix -m -u $MATRIX_UID -g matrix matrix 
@@ -54,7 +69,6 @@ RUN chown -R $MATRIX_UID:$MATRIX_GID /matrix
 RUN chown -R $MATRIX_UID:$MATRIX_GID /synapse
 RUN chown -R $MATRIX_UID:$MATRIX_GID /synapse.version
 
-USER matrix
 
 RUN python3 -m venv /matrix/venv
 RUN . /matrix/venv/bin/activate
@@ -119,7 +133,12 @@ RUN apt-get install -y --no-install-recommends \
         libffi8 \
         python3 \
         python3-venv \
-        pwgen
+        pwgen \
+	libpq5 \
+	libwebp7 \
+        xmlsec1 \
+        libjemalloc2 \
+        libicu72 
 
 RUN rm -rf /var/lib/apt/* /var/cache/apt/* 
 
@@ -128,6 +147,9 @@ RUN chown -R $MATRIX_UID:$MATRIX_GID /uploads
 
 COPY --from=builder /matrix /matrix
 COPY --from=builder /synapse.version /synapse.version
+
+RUN chown -R matrix: /matrix
+RUN chown -R matrix: /synapse.version
 
 USER matrix
 
