@@ -5,6 +5,8 @@
 
 OPTION="${1}"
 
+cat /synapse.version
+
 if [ ! -z "${ROOTPATH}" ]; then
 	echo ":: We have changed the semantic and doesn't need the ROOTPATH"
 	echo ":: variable anymore"
