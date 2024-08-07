@@ -1,8 +1,8 @@
 # target architecture
-FROM debian:trixie-slim as builder
+FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.112.0
+ARG BV_SYN=release-v1.112
 ARG BV_TUR=master
 ARG TAG_SYN=v1.112.0
 
@@ -54,7 +54,6 @@ RUN chown -R $MATRIX_UID:$MATRIX_GID /matrix
 RUN chown -R $MATRIX_UID:$MATRIX_GID /synapse
 RUN chown -R $MATRIX_UID:$MATRIX_GID /synapse.version
 
-USER matrix
 
 RUN python3 -m venv /matrix/venv
 RUN . /matrix/venv/bin/activate

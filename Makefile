@@ -20,8 +20,8 @@ ifeq (${BRANCH}, master)
 endif
 
 build:
-	@echo ">>>> Build docker image latest"
-	BUILDKIT_PROGRESS=plain docker buildx build --no-cache --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} -t ${IMAGEFULLNAME}:latest .
+@echo ">>>> Build docker image latest"
+BUILDKIT_PROGRESS=plain docker buildx build --no-cache --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} -t ${IMAGEFULLNAME}:latest .
 
 push:
 	@echo ">>>> Publish docker image: " ${BRANCH}
