@@ -62,14 +62,14 @@ It is recommended to run the container with a --user <UID>:<GID> flag, to preven
 
 Example:
 
-    $ docker run -v /tmp/data:/data --rm --user 991:991 -e SERVER_NAME=localhost -e REPORT_STATS=no avhost/docker-matrix:<VERSION> generate
+    $ docker run -v /tmp/media_store:/media_store -v /tmp/data:/data --rm --user 991:991 -e SERVER_NAME=localhost -e REPORT_STATS=no avhost/docker-matrix:<VERSION> generate
 
 ## Start
 
 For starting you need the port bindings and a mapping for the
 `/data`-directory.
 
-    $ docker run -d --user 991:991 -p 8448:8448 -p 8008:8008 -p 3478:3478 -v /tmp/data:/data avhost/docker-matrix:<VERSION> start
+    $ docker run -d --user 991:991 -p 8448:8448 -p 8008:8008 -p 3478:3478 -v /tmp/media_store:/media_store -v /tmp/data:/data avhost/docker-matrix:<VERSION> start
 
 ## Port configurations
 
