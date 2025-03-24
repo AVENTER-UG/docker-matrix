@@ -2,9 +2,9 @@
 FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.124
+ARG BV_SYN=release-v1.126
 ARG BV_TUR=master
-ARG TAG_SYN=v1.124.0
+ARG TAG_SYN=v1.126.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -35,12 +35,14 @@ RUN apt-get install -y --no-install-recommends \
     libtool \
     libxml2 \
     libxslt1.1 \
+		libicu-dev \
     pwgen \
     libffi8 \
     sqlite3 \
     python3 \
     python3-pip \
     python3-jinja2 \
+    python3-icu \
     python3-venv
 
 RUN groupadd -r -g $MATRIX_GID matrix
@@ -62,16 +64,14 @@ ENV PATH=/matrix/venv/bin:$PATH
 
 RUN pip3 install --upgrade wheel ;\
     pip3 install --upgrade psycopg2;\
-    pip3 install --upgrade setuptools ;\
     pip3 install --upgrade python-ldap ;\
     pip3 install --force-reinstall -v "Twisted==24.7.0" ;\
     pip3 install --upgrade redis ;\
     pip3 install --upgrade cryptography ;\
-    pip3 install --upgrade lxml  ; \
-    pip3 install --upgrade pyicu
+    pip3 install --upgrade lxml
 
 RUN cd /synapse \
-    && pip3 install --upgrade .[all]
+    && pip3 install .[all]
 
 RUN cd /synapse \
     && GIT_SYN=$(git ls-remote https://github.com/element-hq/synapse $BV_SYN | cut -f 1) \
@@ -118,6 +118,7 @@ RUN apt-get install -y --no-install-recommends \
     libffi8 \
     python3 \
     python3-venv \
+		python3-icu \
     pwgen
 
 RUN rm -rf /var/lib/apt/* /var/cache/apt/*

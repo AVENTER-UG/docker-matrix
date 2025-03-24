@@ -7,8 +7,8 @@ TAG=$(shell git describe --tags --abbrev=0)
 BRANCH=$(shell git symbolic-ref --short HEAD | xargs basename)
 BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
 LASTCOMMIT=$(shell git log -1 --pretty=short | tail -n 1 | tr -d " " | tr -d "UPDATE:")
-TAG_SYN=v1.124.0
-BV_SYN=release-v1.124
+TAG_SYN=v1.126.0
+BV_SYN=release-v1.126
 BUILDDATE=$(shell date -u +%Y%m%d)
 
 
@@ -21,7 +21,7 @@ endif
 
 build:
 	@echo ">>>> Build docker image latest"
-	BUILDKIT_PROGRESS=plain docker buildx build --no-cache --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} -t ${IMAGEFULLNAME}:latest .
+	BUILDKIT_PROGRESS=plain docker build --build-arg TAG_SYN=${TAG_SYN} --build-arg BV_SYN=${BV_SYN} -t ${IMAGEFULLNAME}:latest .
 
 push:
 	@echo ">>>> Publish docker image: " ${BRANCH}
