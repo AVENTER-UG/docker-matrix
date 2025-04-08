@@ -119,7 +119,7 @@ case $OPTION in
             fi
             (
                 if [ -f /data/vector.im.conf ] || [ -f /data/riot.im.conf ] ; then
-                    echo "The riot web client is now handled via silvio/matrix-riot-docker"
+                    echo "The riot web client is now handled via avhost/docker-matrix-riot"
                 fi
             )
             echo "-=> start matrix"
