@@ -7,8 +7,8 @@ TAG=$(shell git describe --tags --abbrev=0)
 BRANCH=$(shell git symbolic-ref --short HEAD | xargs basename)
 BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
 LASTCOMMIT=$(shell git log -1 --pretty=short | tail -n 1 | tr -d " " | tr -d "UPDATE:")
-TAG_SYN=v1.135.2
-BV_SYN=release-v1.135
+TAG_SYN=v1.136.0
+BV_SYN=release-v1.136
 BUILDDATE=$(shell date -u +%Y%m%d)
 
 

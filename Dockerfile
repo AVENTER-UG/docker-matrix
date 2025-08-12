@@ -1,10 +1,10 @@
 # target architecture
-FROM debian:trixie-slim AS builder
+FROM debian:sid-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.135
+ARG BV_SYN=release-v1.136
 ARG BV_TUR=master
-ARG TAG_SYN=v1.135.2
+ARG TAG_SYN=v1.136.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -82,7 +82,7 @@ USER root
 RUN rm -rf /matrix/.cargo \
     rm -rf /matrix/.cache
 
-FROM debian:trixie-slim
+FROM debian:sid-slim
 
 # Maintainer
 LABEL maintainer="Andreas Peters <support@aventer.biz>"
@@ -101,7 +101,7 @@ ENV REPORT_STATS=no
 RUN groupadd -r -g $MATRIX_GID matrix
 RUN useradd -r -d /matrix -m -u $MATRIX_UID -g matrix matrix
 
-RUN  mkdir /data \
+RUN mkdir /data \
     mkdir /uploads
 
 RUN apt-get update -y -q --fix-missing
@@ -126,10 +126,9 @@ RUN rm -rf /var/lib/apt/* /var/cache/apt/*
 RUN chown -R $MATRIX_UID:$MATRIX_GID /data
 RUN chown -R $MATRIX_UID:$MATRIX_GID /uploads
 
-COPY --from=builder /matrix /matrix
-COPY --from=builder /synapse.version /synapse.version
+COPY --from=builder --chown=$MATRIX_UID:$MATRIX_GID /matrix /matrix
+COPY --from=builder --chown=$MATRIX_UID:$MATRIX_GID /synapse.version /synapse.version
 
-RUN chown -R $MATRIX_UID:$MATRIX_GID /matrix
 RUN chmod 777 /matrix
 RUN chmod 777 /synapse.version
 
