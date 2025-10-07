@@ -106,6 +106,8 @@ RUN mkdir /data \
 
 RUN apt-get update -y -q --fix-missing
 RUN apt-get upgrade -y
+RUN apt-get remove -y --purge gcc gcc-15 gcc-15-x86-64-linux-gnu \
+		gcc-x86-64-linux-gnu libgcc-15-dev
 RUN apt-get install -y --no-install-recommends \
     bash \
     coturn \
@@ -121,7 +123,9 @@ RUN apt-get install -y --no-install-recommends \
 		python3-icu \
     pwgen
 
-RUN rm -rf /var/lib/apt/* /var/cache/apt/*
+RUN rm -rf /var/lib/apt/* /var/cache/apt/* /usr/libexec/gcc
+RUN rm /usr/lib/x86_64-linux-gnu/*.a
+RUN rm /usr/lib/x86_64-linux-gnu/*.o
 
 RUN chown -R $MATRIX_UID:$MATRIX_GID /data
 RUN chown -R $MATRIX_UID:$MATRIX_GID /uploads

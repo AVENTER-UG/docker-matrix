@@ -4,11 +4,11 @@
 IMAGENAME=docker-matrix
 IMAGEFULLNAME=avhost/${IMAGENAME}
 TAG=v1.139.1
+BV_SYN=release-v1.139
 BRANCH=$(shell git symbolic-ref --short HEAD | xargs basename)
 BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
 LASTCOMMIT=$(shell git log -1 --pretty=short | tail -n 1 | tr -d " " | tr -d "UPDATE:")
 TAG_SYN=${TAG}
-BV_SYN=release-v1.139
 BUILDDATE=$(shell date -u +%Y%m%d)
 
 
