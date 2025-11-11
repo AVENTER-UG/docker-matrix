@@ -2,9 +2,9 @@
 FROM debian:sid-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.139
+ARG BV_SYN=release-v1.142
 ARG BV_TUR=master
-ARG TAG_SYN=v1.139.1
+ARG TAG_SYN=v1.142.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -106,8 +106,6 @@ RUN mkdir /data \
 
 RUN apt-get update -y -q --fix-missing
 RUN apt-get upgrade -y
-RUN apt-get remove -y --purge gcc gcc-15 gcc-15-x86-64-linux-gnu \
-		gcc-x86-64-linux-gnu libgcc-15-dev
 RUN apt-get install -y --no-install-recommends \
     bash \
     coturn \
@@ -122,6 +120,10 @@ RUN apt-get install -y --no-install-recommends \
     python3-venv \
 		python3-icu \
     pwgen
+
+RUN apt-get remove -y --purge gcc gcc-15 gcc-15-x86-64-linux-gnu \
+		gcc-x86-64-linux-gnu libgcc-15-dev
+
 
 RUN rm -rf /var/lib/apt/* /var/cache/apt/* /usr/libexec/gcc
 RUN rm /usr/lib/x86_64-linux-gnu/*.a
