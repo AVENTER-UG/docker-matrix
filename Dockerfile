@@ -2,9 +2,9 @@
 FROM debian:sid-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.142
+ARG BV_SYN=release-v1.145
 ARG BV_TUR=master
-ARG TAG_SYN=v1.142.0
+ARG TAG_SYN=v1.145.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -68,6 +68,7 @@ RUN pip3 install --upgrade wheel ;\
     pip3 install --force-reinstall -v "Twisted==24.7.0" ;\
     pip3 install --upgrade redis ;\
     pip3 install --upgrade cryptography ;\
+		pip3 install --upgrade -v "prometheus_client==0.23.1" ;\
     pip3 install --upgrade lxml
 
 RUN cd /synapse \
