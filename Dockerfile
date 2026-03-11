@@ -4,7 +4,7 @@ FROM debian:sid-slim AS builder
 # Git branch to build from
 ARG BV_SYN=release-v1.149
 ARG BV_TUR=master
-ARG TAG_SYN=v1.149.0
+ARG TAG_SYN=v1.149.1
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991

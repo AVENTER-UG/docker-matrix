@@ -3,7 +3,7 @@
 #vars
 IMAGENAME=docker-matrix
 IMAGEFULLNAME=avhost/${IMAGENAME}
-TAG=v1.149.0
+TAG=v1.149.1
 BV_SYN=release-v1.149
 BRANCH=${TAG}
 BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
