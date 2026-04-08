@@ -3,8 +3,8 @@
 #vars
 IMAGENAME=docker-matrix
 IMAGEFULLNAME=avhost/${IMAGENAME}
-TAG=v1.149.0
-BV_SYN=release-v1.149
+TAG=v1.151.0
+BV_SYN=release-v1.151
 BRANCH=${TAG}
 BRANCHSHORT=$(shell echo ${BRANCH} | awk -F. '{ print $$1"."$$2 }')
 LASTCOMMIT=$(shell git log -1 --pretty=short | tail -n 1 | tr -d " " | tr -d "UPDATE:")
