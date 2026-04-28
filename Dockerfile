@@ -1,10 +1,10 @@
 # target architecture
-FROM debian:sid-slim AS builder
+FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.151
+ARG BV_SYN=release-v1.152
 ARG BV_TUR=master
-ARG TAG_SYN=v1.151.0
+ARG TAG_SYN=v1.152.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -24,26 +24,23 @@ RUN set -ex \
     && apt-get upgrade -y
 
 RUN apt-get install -y --no-install-recommends rustc cargo file gcc git libevent-dev libffi-dev libgnutls28-dev libjpeg62-turbo-dev libldap2-dev libsasl2-dev libsqlite3-dev \
-    libssl-dev libtool libxml2-dev libxslt1-dev make zlib1g-dev python3-dev python3-setuptools libpq-dev pkg-config libicu-dev g++
+    libtool libxml2-dev libxslt1-dev make zlib1g-dev python3-dev python3-setuptools libpq-dev pkg-config libicu-dev g++
 
 RUN apt-get install -y --no-install-recommends \
     bash \
-    coreutils \
     coturn \
+    sqlite3 \
+    zlib1g \
     libjpeg62-turbo \
-    libssl3 \
-    libtool \
     libxml2 \
     libxslt1.1 \
-		libicu-dev \
-    pwgen \
     libffi8 \
-    sqlite3 \
     python3 \
-    python3-pip \
-    python3-jinja2 \
+    python3-venv \
     python3-icu \
-    python3-venv
+    pwgen \
+    openssl \
+    ca-certificates
 
 RUN groupadd -r -g $MATRIX_GID matrix
 RUN useradd -r -d /matrix -m -u $MATRIX_UID -g matrix matrix
@@ -62,17 +59,18 @@ RUN . /matrix/venv/bin/activate
 
 ENV PATH=/matrix/venv/bin:$PATH
 
-RUN pip3 install --upgrade wheel ;\
-    pip3 install --upgrade psycopg2;\
-    pip3 install --upgrade python-ldap ;\
-    pip3 install --force-reinstall -v "Twisted==24.7.0" ;\
-    pip3 install --upgrade redis ;\
-    pip3 install --upgrade cryptography ;\
-		pip3 install --upgrade -v "prometheus_client==0.23.1" ;\
-    pip3 install --upgrade lxml
 
-RUN cd /synapse \
-    && pip3 install .[all]
+RUN pip3 install wheel
+RUN pip3 install psycopg2
+RUN pip3 install python-ldap
+RUN pip3 install redis
+RUN pip3 install lxml
+
+RUN pip3 install --force-reinstall -v "Twisted==24.7.0"
+RUN pip3 install -v "prometheus_client==0.23.1"
+
+RUN pip3 install /synapse[all]
+RUN pip3 install --force-reinstall pyOpenSSL==24.2.1 cryptography==42.0.8
 
 RUN cd /synapse \
     && GIT_SYN=$(git ls-remote https://github.com/element-hq/synapse $BV_SYN | cut -f 1) \
@@ -83,7 +81,7 @@ USER root
 RUN rm -rf /matrix/.cargo \
     rm -rf /matrix/.cache
 
-FROM debian:sid-slim
+FROM debian:trixie-slim
 
 # Maintainer
 LABEL maintainer="Andreas Peters <support@aventer.biz>"
@@ -122,8 +120,8 @@ RUN apt-get install -y --no-install-recommends \
 		python3-icu \
     pwgen
 
-RUN apt-get remove -y --purge gcc gcc-15 gcc-15-x86-64-linux-gnu \
-		gcc-x86-64-linux-gnu libgcc-15-dev
+RUN apt-get remove -y --purge gcc gcc-14 gcc-14-x86-64-linux-gnu \
+		gcc-x86-64-linux-gnu libgcc-14-dev
 
 
 RUN rm -rf /var/lib/apt/* /var/cache/apt/* /usr/libexec/gcc
