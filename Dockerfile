@@ -2,9 +2,9 @@
 FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.152
+ARG BV_SYN=release-v1.153
 ARG BV_TUR=master
-ARG TAG_SYN=v1.152.0
+ARG TAG_SYN=v1.153.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -128,6 +128,8 @@ RUN rm -rf /var/lib/apt/* /var/cache/apt/* /usr/libexec/gcc
 RUN rm /usr/lib/x86_64-linux-gnu/*.a
 RUN rm /usr/lib/x86_64-linux-gnu/*.o
 
+RUN mkdir /media_store
+RUN chown -R $MATRIX_UID:$MATRIX_GID /media_store
 RUN chown -R $MATRIX_UID:$MATRIX_GID /data
 RUN chown -R $MATRIX_UID:$MATRIX_GID /uploads
 
