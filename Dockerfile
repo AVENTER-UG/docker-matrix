@@ -2,9 +2,9 @@
 FROM debian:trixie-slim AS builder
 
 # Git branch to build from
-ARG BV_SYN=release-v1.153
+ARG BV_SYN=release-v1.154
 ARG BV_TUR=master
-ARG TAG_SYN=v1.153.0
+ARG TAG_SYN=v1.154.0
 
 # user configuration
 ENV MATRIX_UID=991 MATRIX_GID=991
@@ -70,7 +70,7 @@ RUN pip3 install --force-reinstall -v "Twisted==24.7.0"
 RUN pip3 install -v "prometheus_client==0.23.1"
 
 RUN pip3 install /synapse[all]
-RUN pip3 install --force-reinstall pyOpenSSL==24.2.1 cryptography==42.0.8
+RUN pip3 install --force-reinstall "pyOpenSSL==24.2.1 " "service_identity>=24.1.0" "cryptography>=42,<44"
 
 RUN cd /synapse \
     && GIT_SYN=$(git ls-remote https://github.com/element-hq/synapse $BV_SYN | cut -f 1) \
